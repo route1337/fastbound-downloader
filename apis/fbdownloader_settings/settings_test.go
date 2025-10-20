@@ -63,7 +63,8 @@ func TestValidateSettingsFile(t *testing.T) {
 					BoundBooks:       "/books/",
 					BackgroundChecks: "/4473s/",
 				},
-				IsCron: false,
+				IsCron:         false,
+				DisableMetrics: false,
 			},
 			wantErr: false,
 		},
@@ -86,7 +87,8 @@ func TestValidateSettingsFile(t *testing.T) {
 					BoundBooks:       "/books/",
 					BackgroundChecks: "/4473s/",
 				},
-				IsCron: false,
+				IsCron:         false,
+				DisableMetrics: false,
 			},
 			wantErr: true,
 		},
@@ -133,7 +135,8 @@ func TestReadSettingsFile(t *testing.T) {
 			BoundBooks:       "/books/",
 			BackgroundChecks: "/4473s/",
 		},
-		IsCron: false,
+		IsCron:         false,
+		DisableMetrics: false,
 	}
 	// Write the test settings to the file
 	jsonData, _ := json.MarshalIndent(testConfig, "", " ")

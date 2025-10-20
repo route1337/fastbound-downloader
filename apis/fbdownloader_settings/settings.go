@@ -23,7 +23,8 @@ type FBDConfig struct {
 		BoundBooks       string `json:"bound-books"`
 		BackgroundChecks string `json:"background-checks"`
 	} `json:"paths"`
-	IsCron bool `json:"is-cron,omitempty"`
+	IsCron         bool `json:"is-cron,omitempty"`
+	DisableMetrics bool `json:"disable-metrics,omitempty"`
 }
 
 // CheckForSettingsFile Check if the settings file exists and has the correct mode
