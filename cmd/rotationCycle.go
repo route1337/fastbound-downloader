@@ -19,5 +19,7 @@ func rotationCycle(settings fbdownloader_settings.FBDConfig) {
 	if err != nil {
 		return
 	}
-	log.Printf("Downloaded the bound book %s\n", downloadedBook)
+	if downloadedBook != "" {
+		log.Printf("Downloaded the bound book %s\n", downloadedBook)
+	}
 }

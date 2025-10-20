@@ -93,6 +93,15 @@ func DownloadBoundBook(apiBase string, config fbdownloader_settings.FBDConfig) (
 	downloadedBook := filepath.Base(parsedUrl.Path)
 	// Set a destination path and create a file to store there
 	destinationPath := filepath.Join(config.Paths.BoundBooks, downloadedBook)
+
+    // Validate the file does not already exist, and log if it does
+	if _, err := os.Stat(destinationPath); err == nil {
+		log.Printf("%s has already been downloaded. Skipping download.", destinationPath)
+		return "", nil // A blank destinationPath can indicate to other functions that we already have this file
+	} else if !os.IsNotExist(err) {
+		// An error other than the file existing already occurred.
+		return "", fmt.Errorf("failed to check if a file for %s exists already: %w", destinationPath, err)
+	}
 	storeFile, err := os.Create(destinationPath)
 	if err != nil {
 		return "", fmt.Errorf("failed to save bound book file: %w", err)
