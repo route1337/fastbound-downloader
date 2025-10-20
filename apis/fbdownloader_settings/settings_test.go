@@ -65,6 +65,7 @@ func TestValidateSettingsFile(t *testing.T) {
 				},
 				IsCron:         false,
 				DisableMetrics: false,
+				MetricsPort:    ":9090",
 			},
 			wantErr: false,
 		},
@@ -89,6 +90,7 @@ func TestValidateSettingsFile(t *testing.T) {
 				},
 				IsCron:         false,
 				DisableMetrics: false,
+				MetricsPort:    ":9090",
 			},
 			wantErr: true,
 		},
@@ -137,6 +139,7 @@ func TestReadSettingsFile(t *testing.T) {
 		},
 		IsCron:         false,
 		DisableMetrics: false,
+		MetricsPort:    ":9090",
 	}
 	// Write the test settings to the file
 	jsonData, _ := json.MarshalIndent(testConfig, "", " ")
