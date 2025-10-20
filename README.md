@@ -19,13 +19,17 @@ Currently all of these values are required:
       "bound-books": "/books/",
       "background-checks": "/4473s/"
   },
-  "is-cron": false
+  "is-cron": false,
+  "disable-metrics": false,
+  "metrics-port": "9090"
 }
 ```
 
-**Notes:**
+**Optional Variables:**
 
-1. `is-cron` will disable the cycle logic. The downloads will execute once and exit. This is useful if you want to run this as a cron in K8s or elsewhere.
+1. `is-cron` (Default: false) will disable the cycle logic. The downloads will execute once and exit. This is useful if you want to run this as a cron in K8s or elsewhere. This also disables metrics.
+2. `disable-metrics` (Default: false) will disable the Prometheus `/metrics` endpoint on the container.
+3. `metrics-port` (Default: 9090) lets you override the default port.
 
 Functionality
 -------------
