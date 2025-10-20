@@ -67,6 +67,25 @@ func DownloadBoundBook(apiBase string, config fbdownloader_settings.FBDConfig) (
 	if apiResponse.URL == "" {
 		return "", fmt.Errorf("API response did not contain a download URL")
 	}
+
+	// Extract file name from URL
+	parsedUrl, err := url.Parse(apiResponse.URL)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse download URL: %w", err)
+	}
+	downloadedBook := filepath.Base(parsedUrl.Path)
+	// Set a destination path and create a file to store there
+	destinationPath := filepath.Join(config.Paths.BoundBooks, downloadedBook)
+
+	// Validate the file does not already exist, and log if it does
+	if _, err := os.Stat(destinationPath); err == nil {
+		log.Printf("%s has already been downloaded. Skipping download.", destinationPath)
+		return "", nil // A blank destinationPath can indicate to other functions that we already have this file
+	} else if !os.IsNotExist(err) {
+		// An error other than the file existing already occurred.
+		return "", fmt.Errorf("failed to check if a file for %s exists already: %w", destinationPath, err)
+	}
+
 	// Download the file from the provided URL
 	downloadRequest, err := http.NewRequestWithContext(apiContext, "GET", apiResponse.URL, nil)
 	if err != nil {
@@ -84,23 +103,6 @@ func DownloadBoundBook(apiBase string, config fbdownloader_settings.FBDConfig) (
 
 	if downloadResponse.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("file download failed with status %d", downloadResponse.StatusCode)
-	}
-	// Extract file name from URL
-	parsedUrl, err := url.Parse(apiResponse.URL)
-	if err != nil {
-		return "", fmt.Errorf("failed to parse download URL: %w", err)
-	}
-	downloadedBook := filepath.Base(parsedUrl.Path)
-	// Set a destination path and create a file to store there
-	destinationPath := filepath.Join(config.Paths.BoundBooks, downloadedBook)
-
-    // Validate the file does not already exist, and log if it does
-	if _, err := os.Stat(destinationPath); err == nil {
-		log.Printf("%s has already been downloaded. Skipping download.", destinationPath)
-		return "", nil // A blank destinationPath can indicate to other functions that we already have this file
-	} else if !os.IsNotExist(err) {
-		// An error other than the file existing already occurred.
-		return "", fmt.Errorf("failed to check if a file for %s exists already: %w", destinationPath, err)
 	}
 	storeFile, err := os.Create(destinationPath)
 	if err != nil {
