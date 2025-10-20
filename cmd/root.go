@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/route1337/fastbound-downloader/apis/fbdownloader_settings"
+	"github.com/route1337/fastbound-downloader/metrics"
 	"log"
 	"net/http"
 	"os"
@@ -32,7 +33,7 @@ Version: %s`, functionHelpLong, shortVersion),
 		if !settings.IsCron && !settings.DisableMetrics {
 			log.Printf("Metrics server starting on %s\n", settings.MetricsPort)
 			go func() {
-				http.Handle("/metrics", promhttp.Handler())
+				http.Handle("/metrics", promhttp.HandlerFor(metrics.MetricsRegistry, promhttp.HandlerOpts{}))
 				log.Fatal(http.ListenAndServe(settings.MetricsPort, nil))
 			}()
 		}

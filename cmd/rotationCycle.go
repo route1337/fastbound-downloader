@@ -8,6 +8,7 @@ package cmd
 import (
 	"github.com/route1337/fastbound-downloader/apis/fastbound"
 	"github.com/route1337/fastbound-downloader/apis/fbdownloader_settings"
+	"github.com/route1337/fastbound-downloader/metrics"
 	"log"
 )
 
@@ -17,9 +18,13 @@ func rotationCycle(settings fbdownloader_settings.FBDConfig) {
 	// Download the daily Bound Book
 	downloadedBook, err := fastbound.DownloadBoundBook(fastboundAPIBaseURL, settings)
 	if err != nil {
+		metrics.FailedBookDownloadsTotal.Inc()
 		return
 	}
 	if downloadedBook != "" {
+		metrics.DownloadedBooksTotal.Inc()
 		log.Printf("Downloaded the bound book %s\n", downloadedBook)
+	} else {
+		metrics.SkippedBookDownloadsTotal.Inc()
 	}
 }
