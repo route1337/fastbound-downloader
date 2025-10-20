@@ -23,7 +23,9 @@ type FBDConfig struct {
 		BoundBooks       string `json:"bound-books"`
 		BackgroundChecks string `json:"background-checks"`
 	} `json:"paths"`
-	IsCron bool `json:"is-cron,omitempty"`
+	IsCron         bool   `json:"is-cron,omitempty"`
+	DisableMetrics bool   `json:"disable-metrics,omitempty"`
+	MetricsPort    string `json:"metrics-port,omitempty"`
 }
 
 // CheckForSettingsFile Check if the settings file exists and has the correct mode
@@ -72,6 +74,16 @@ func ReadSettingsFile(settingsFilePath string) (*FBDConfig, error) {
 	err = json.Unmarshal(fileData, &outputConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failure reading discovered config file: %v", err)
+	}
+
+	// Set default metrics port if left unconfigured
+	if outputConfig.MetricsPort == "" {
+		outputConfig.MetricsPort = ":9090"
+	} else {
+		// Ensure the port string starts with a colon as we will assume this elsewhere
+		if outputConfig.MetricsPort[0] != ':' {
+			outputConfig.MetricsPort = ":" + outputConfig.MetricsPort
+		}
 	}
 
 	// Validate settings config

@@ -7,8 +7,11 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/route1337/fastbound-downloader/apis/fbdownloader_settings"
+	"github.com/route1337/fastbound-downloader/metrics"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -25,6 +28,16 @@ Version: %s`, functionHelpLong, shortVersion),
 	// Run root's command normally
 	Run: func(cmd *cobra.Command, args []string) {
 		settings := pullSettings()
+
+		// Start the Prometheus metrics server only if not disabled by one or more flags that prevent the functionality
+		if !settings.IsCron && !settings.DisableMetrics {
+			log.Printf("Metrics server starting on %s\n", settings.MetricsPort)
+			go func() {
+				http.Handle("/metrics", promhttp.HandlerFor(metrics.MetricsRegistry, promhttp.HandlerOpts{}))
+				log.Fatal(http.ListenAndServe(settings.MetricsPort, nil))
+			}()
+		}
+
 		if settings.IsCron {
 			// Run a cycle and exit
 			rotationCycle(settings)
