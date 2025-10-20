@@ -7,6 +7,7 @@ COPY go.sum .
 COPY main.go .
 COPY cmd/ cmd/
 COPY apis/ apis/
+COPY metrics/ metrics/
 
 RUN go mod download
 
