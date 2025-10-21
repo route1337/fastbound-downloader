@@ -36,6 +36,8 @@ Version: %s`, functionHelpLong, shortVersion),
 				http.Handle("/metrics", promhttp.HandlerFor(metrics.MetricsRegistry, promhttp.HandlerOpts{}))
 				log.Fatal(http.ListenAndServe(settings.MetricsPort, nil))
 			}()
+			log.Printf("Waiting 5 minutes before scanning\n")
+			time.Sleep(5 * time.Minute)
 		}
 
 		if settings.IsCron {
@@ -48,7 +50,7 @@ Version: %s`, functionHelpLong, shortVersion),
 			log.Printf("Running a cycle at %s\n", now)
 			rotationCycle(settings)
 			// Run future cycles only AFTER the interval has occurred
-			ticker := time.NewTicker(scanningInterval)
+			ticker := time.NewTicker(time.Duration(settings.ScanningIntervalInMinutes) * time.Minute)
 			for range ticker.C {
 				now := time.Now().Format("2006-01-02 15:04 MST")
 				log.Printf("Running a cycle at %s\n", now)

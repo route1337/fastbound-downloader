@@ -23,9 +23,10 @@ type FBDConfig struct {
 		BoundBooks       string `json:"bound-books"`
 		BackgroundChecks string `json:"background-checks"`
 	} `json:"paths"`
-	IsCron         bool   `json:"is-cron,omitempty"`
-	DisableMetrics bool   `json:"disable-metrics,omitempty"`
-	MetricsPort    string `json:"metrics-port,omitempty"`
+	IsCron                    bool   `json:"is-cron,omitempty"`
+	DisableMetrics            bool   `json:"disable-metrics,omitempty"`
+	MetricsPort               string `json:"metrics-port,omitempty"`
+	ScanningIntervalInMinutes uint   `json:"scanning-interval,omitempty"`
 }
 
 // CheckForSettingsFile Check if the settings file exists and has the correct mode
@@ -84,6 +85,11 @@ func ReadSettingsFile(settingsFilePath string) (*FBDConfig, error) {
 		if outputConfig.MetricsPort[0] != ':' {
 			outputConfig.MetricsPort = ":" + outputConfig.MetricsPort
 		}
+	}
+
+	// Set default scanning interval to 1440 minutes (1 day) if left unconfigured
+	if outputConfig.ScanningIntervalInMinutes == 0 {
+		outputConfig.ScanningIntervalInMinutes = 1440
 	}
 
 	// Validate settings config
