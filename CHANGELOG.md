@@ -2,6 +2,12 @@ Changelog
 ---------
 A list of changes made to Fastbound Downloader
 
+Version 0.2.1
+-------------
+
+1. Define scanning interval in minutes with a 1 day default setting if not defined
+2. Start with a forced 5 minute delay if metrics are enabled before first scan
+
 Version 0.2.0
 -------------
 

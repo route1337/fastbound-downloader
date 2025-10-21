@@ -21,7 +21,8 @@ Currently all of these values are required:
   },
   "is-cron": false,
   "disable-metrics": false,
-  "metrics-port": "9090"
+  "metrics-port": "9090",
+  "scanning-interval": 1440
 }
 ```
 
@@ -30,6 +31,7 @@ Currently all of these values are required:
 1. `is-cron` (Default: false) will disable the cycle logic. The downloads will execute once and exit. This is useful if you want to run this as a cron in K8s or elsewhere. This also disables metrics.
 2. `disable-metrics` (Default: false) will disable the Prometheus `/metrics` endpoint on the container.
 3. `metrics-port` (Default: 9090) lets you override the default port.
+4. `scanning-interval` (Default: 1440) how often, in minutes fbdownloader should check for new files to download
 
 Functionality
 -------------
